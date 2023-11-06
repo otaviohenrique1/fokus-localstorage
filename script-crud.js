@@ -2,16 +2,19 @@ const taskListContainer = document.querySelector(".app__section-task-list");
 const formTask = document.querySelector(".app__form-add-task");
 const toggleFormTaskBtn = document.querySelector(".app__button--add-task");
 const formLabel = document.querySelector(".app__form-label");
+const textArea = document.querySelector(".app__form-textarea");
+const cancelFormTaskBtn = document.querySelector(".app__form-footer__button--cancel");
 
+// Lista de tarefas
 let tarefas = [
-  {
-    descricao: 'Tarefa Concluída',
-    concluida: true
-  },
-  {
-    descricao: 'Tarefa Pendente',
-    concluida: false
-  }
+  // {
+  //   descricao: 'Tarefa Concluída',
+  //   concluida: true
+  // },
+  // {
+  //   descricao: 'Tarefa Pendente',
+  //   concluida: false
+  // }
 ];
 
 const taskIconSvg = `
@@ -24,6 +27,13 @@ const taskIconSvg = `
 </svg>
 `;
 
+// Limpa o formulario
+const limparForm = () => {
+  textArea.value = "";
+  formTask.classList.add("hidden");
+};
+
+// Cria uma tarefa
 function createTask(tarefa) {
   const li = document.createElement("li");
   li.classList.add("app__section-task-list-item");
@@ -41,12 +51,34 @@ function createTask(tarefa) {
   return li;
 }
 
+// Adiciona a lista na pagina as tarefas
 tarefas.forEach((task) => {
   const taskItem = createTask(task);
   taskListContainer.appendChild(taskItem);
 });
 
+// Mostra o formulario
 toggleFormTaskBtn.addEventListener("click", () => {
   formLabel.textContent = "Adicionando tarefa";
   formTask.classList.toggle("hidden");
+});
+
+// Acao do formulario
+formTask.addEventListener("submit", (evento) => {
+  evento.preventDefault();
+  const task = {
+    descricao: textArea.value,
+    concluido: false
+  };
+  tarefas.push(task);
+  const taskItem = createTask(task);
+  taskListContainer.appendChild(taskItem)
+
+  limparForm();
+});
+
+// Esconde o formulario
+cancelFormTaskBtn.addEventListener("click", () => {
+  formTask.classList.add('hidden');
+  limparForm();
 });
