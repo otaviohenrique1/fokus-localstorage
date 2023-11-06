@@ -1,0 +1,12 @@
+{
+  "name": "fokus-localstorage",
+  "version": "1.0.0",
+  "description": "Projeto feito no curso de 'JavaScript na Web: armazenando dados no navegador' da Alura.",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Otavio Henrique de Lima e Silva",
+  "license": "ISC"
+}
