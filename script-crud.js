@@ -38,6 +38,9 @@ const taskIconSvg = `
 let tarefaSelecionada = null;
 let itemTarefaSelecionada = null;
 
+let tarefaEmEdicao = null;
+let paragraphEmEdicao = null;
+
 const selecionaTarefa = (tarefa, elemento) => {
   document.querySelectorAll('.app__section-task-list-item-active').forEach(function (button) {
     button.classList.remove('app__section-task-list-item-active');
@@ -58,9 +61,24 @@ const selecionaTarefa = (tarefa, elemento) => {
 
 // Limpa o formulario
 const limparForm = () => {
+  tarefaEmEdicao = null;
+  paragraphEmEdicao = null;
   textArea.value = "";
   formTask.classList.add("hidden");
 };
+
+const selecionaTarefaParaEditar = (tarefa, elemento) => {
+  if (tarefaEmEdicao == tarefa) {
+    limparForm();
+    return;
+  }
+
+  formLabel.textContent = "Editando tarefa";
+  tarefaEmEdicao = tarefa;
+  paragraphEmEdicao = elemento;
+  textArea.value = tarefa.descricao;
+  formTask.classList.remove("hidden");
+}
 
 // Cria uma tarefa
 function createTask(tarefa) {
@@ -83,7 +101,18 @@ function createTask(tarefa) {
   
   // Cria o elemento 'button'
   const button = document.createElement("button");
-  
+
+  button.classList.add('app_button-edit');
+  const editIcon = document.createElement('img');
+  editIcon.setAttribute('src', 'imagens/edit.png');
+
+  button.appendChild(editIcon);
+
+  button.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    selecionaTarefaParaEditar(tarefa, paragraph);
+  });
+
   svgIcon.addEventListener("click", (evento) => {
     evento.stopPropagation();
     button.setAttribute("disabled", true);
@@ -98,6 +127,7 @@ function createTask(tarefa) {
   // Coloca os elementos 'svg' e 'p' dentro do elemento 'li'
   li.appendChild(svgIcon);
   li.appendChild(paragraph);
+  li.appendChild(button);
 
   return li;
 }
@@ -123,19 +153,24 @@ const updateLocalStorage = () => {
 formTask.addEventListener("submit", (evento) => {
   evento.preventDefault();
 
-  const task = {
-    descricao: textArea.value,
-    concluido: false
-  };
-
-  // Coloca a tarefa na lista de tarefas
-  tarefas.push(task);
-
-  // Cria o html da tarefa
-  const taskItem = createTask(task);
-
-  // Coloca a tarefa na pagina
-  taskListContainer.appendChild(taskItem)
+  if (tarefaEmEdicao) {
+    tarefaEmEdicao.textContent = textArea.value;
+    paragraphEmEdicao.textContent = textArea.value;
+  } else {
+    const task = {
+      descricao: textArea.value,
+      concluido: false
+    };
+  
+    // Coloca a tarefa na lista de tarefas
+    tarefas.push(task);
+  
+    // Cria o html da tarefa
+    const taskItem = createTask(task);
+  
+    // Coloca a tarefa na pagina
+    taskListContainer.appendChild(taskItem);
+  }
 
   updateLocalStorage();
 
