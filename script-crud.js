@@ -38,7 +38,23 @@ const taskIconSvg = `
 let tarefaSelecionada = null;
 let itemTarefaSelecionada = null;
 
-const selecionaTarefa = () => {};
+const selecionaTarefa = (tarefa, elemento) => {
+  document.querySelectorAll('.app__section-task-list-item-active').forEach(function (button) {
+    button.classList.remove('app__section-task-list-item-active');
+  });
+
+  if (tarefaSelecionada == tarefa) {
+    taskAtiveDescription.textContent = null;
+    itemTarefaSelecionada = null;
+    tarefaSelecionada = null;
+    return;
+  }
+
+  tarefaSelecionada = tarefa;
+  itemTarefaSelecionada = elemento;
+  taskAtiveDescription.textContent = tarefa.descricao;
+  elemento.classList.add('app__section-task-list-item-active');
+};
 
 // Limpa o formulario
 const limparForm = () => {
@@ -63,6 +79,20 @@ function createTask(tarefa) {
 
   li.onclick = () => {
     selecionaTarefa(tarefa, li);
+  }
+  
+  // Cria o elemento 'button'
+  const button = document.createElement("button");
+  
+  svgIcon.addEventListener("click", (evento) => {
+    evento.stopPropagation();
+    button.setAttribute("disabled", true);
+    li.classList.add("app__section-task-list-item-complete");
+  });
+
+  if (tarefas.concluida) {
+    button.setAttribute("disabled", true);
+    li.classList.add("app__section-task-list-item-complete")
   }
 
   // Coloca os elementos 'svg' e 'p' dentro do elemento 'li'
